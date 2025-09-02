@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+//audry tu dois metttre le middleware ici pour protéger les deux routes suivantes
+Route::get('/ads/create', [AdsController::class, 'create'])->name('ads.create');
+Route::post('/ads', [AdsController::class, 'store'])->name('ads.store');
+
+
+Route::get('/', [AdsController::class, 'getAds'])->name('home');
