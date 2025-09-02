@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// create all default ads route in on line
+Route::resource('ads',\app\Http\Controllers\AdsController::class);
