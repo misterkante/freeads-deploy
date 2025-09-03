@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    redirect()->route('ads.index');
 });
 
 // create all default ads route in on line

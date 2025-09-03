@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
@@ -12,9 +13,7 @@ class AdsController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
-
-       
+     {
         $categoryId = $request->input('category');
         $minPrice = $request->input('minPrice');
         $maxPrice = $request->input('maxPrice');
@@ -51,6 +50,7 @@ class AdsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+  
     public function create()
     {
         return view('ads.create');
@@ -59,6 +59,7 @@ class AdsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     {
         $request->validate([
@@ -70,8 +71,7 @@ class AdsController extends Controller
             'location' => 'required|string|max:255',
             'condition' => 'required|in:new,good,used',
         ]);
-
-       
+      
         $ad = \App\Models\Ad::create([
             'title' => $request->title,
             'category_id' => $request->category_id,
@@ -83,8 +83,7 @@ class AdsController extends Controller
             'created_by' => Auth::id(),
             'slug' => \Str::slug($request->title) . '-' . uniqid(),
         ]);
-
-        
+      
         if ($request->hasFile('photos')) {
             foreach ($request->file('photos') as $photo) {
                 $path = $photo->store('ads_photos', 'public');
@@ -97,10 +96,11 @@ class AdsController extends Controller
 
         return redirect()->route('ads.show', $ad->slug)->with('success', 'Annonce créée avec succès!');
     }
-
+  
     /**
      * Display the specified resource.
      */
+  
     public function show(string $ads)
     {
         $product = \App\Models\Ad::where('slug', $ads);
@@ -122,8 +122,6 @@ class AdsController extends Controller
     public function update(Request $request, string $slug)
     {
         $ad = \App\Models\Ad::where('slug', $slug)->firstOrFail();
-        
-        
         $request->validate([
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
@@ -134,8 +132,6 @@ class AdsController extends Controller
             'condition' => 'required|in:new,good,used',
             'delete_photos.*' => 'nullable|exists:photos,id'
         ]);
-
-        
         $ad->update([
             'title' => $request->title,
             'category_id' => $request->category_id,
@@ -171,7 +167,6 @@ class AdsController extends Controller
 
         return redirect()->route('ads.show', $ad->slug)->with('success', 'Annonce mise à jour avec succès!');
     }
-
 
     /**
      * Remove the specified resource from storage.
