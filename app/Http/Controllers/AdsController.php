@@ -14,7 +14,7 @@ class AdsController extends Controller
     public function index(Request $request)
     {
 
-        //recuperer les infos depuis l'URI
+       
         $categoryId = $request->input('category');
         $minPrice = $request->input('minPrice');
         $maxPrice = $request->input('maxPrice');
@@ -22,7 +22,6 @@ class AdsController extends Controller
         $location = $request->input('location');
         $search = $request->input('search');
 
-        //rechercher le produit
         $query = \App\Models\Ad::query();
         if(!empty($search) && $search = '') {
             $query->where('title', 'like', "%$search%");
@@ -64,25 +63,39 @@ class AdsController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
             'description' => 'required|string',
-            'photo' => 'required|image|max:2048',
+            'photos.*' => 'required|image|max:2048',
             'price' => 'required|numeric|min:0',
             'location' => 'required|string|max:255',
             'condition' => 'required|in:new,good,used',
         ]);
 
-        $photoPath = $request->file('photo')->store('ads_photos', 'public');
-
-        \App\Models\Ad::create([
+       
+        $ad = \App\Models\Ad::create([
             'title' => $request->title,
-            'category' => $request->category,
+            'category_id' => $request->category_id,
             'description' => $request->description,
-            'photo' => $photoPath,
             'price' => $request->price,
             'location' => $request->location,
             'condition' => $request->condition,
+            'user_id' => Auth::id(),
+            'created_by' => Auth::id(),
+            'slug' => \Str::slug($request->title) . '-' . uniqid(),
         ]);
+
+        
+        if ($request->hasFile('photos')) {
+            foreach ($request->file('photos') as $photo) {
+                $path = $photo->store('ads_photos', 'public');
+                \App\Models\Photo::create([
+                    'ad_id' => $ad->id,
+                    'path' => $path
+                ]);
+            }
+        }
+
+        return redirect()->route('ads.show', $ad->slug)->with('success', 'Annonce créée avec succès!');
     }
 
     /**
@@ -97,31 +110,66 @@ class AdsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $ads)
+    public function edit(string $slug)
     {
-        return view('ads.edit');
+        $ad = \App\Models\Ad::where('slug', $slug)->firstOrFail();
+        return view('ads.edit', compact('ad'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $ads)
+    public function update(Request $request, string $slug)
     {
-        // data validation
-        $validated = $request->validate([
-            'title' => 'string',
-            'category' => 'string',
-            'description' => 'string',
-            'photos.*' => 'required|image|mimes:png,jpg,jpeg,webp',
-            'price' => 'decimal:0,2',
-            'location' => 'string',
-            'condition' => 'enum:good,new,used',
-            'slug' => 'string',
+        $ad = \App\Models\Ad::where('slug', $slug)->firstOrFail();
+        
+        
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'required|string',
+            'photos.*' => 'nullable|image|max:2048',
+            'price' => 'required|numeric|min:0',
+            'location' => 'required|string|max:255',
+            'condition' => 'required|in:new,good,used',
+            'delete_photos.*' => 'nullable|exists:photos,id'
         ]);
 
-        $product = \App\Models\Ad::where('slug', $ads);
-        $product->update($validated);
-        $product->save();
+        
+        $ad->update([
+            'title' => $request->title,
+            'category_id' => $request->category_id,
+            'description' => $request->description,
+            'price' => $request->price,
+            'location' => $request->location,
+            'condition' => $request->condition,
+            'updated_by' => Auth::id(),
+        ]);
+
+        
+        if ($request->has('delete_photos')) {
+            foreach ($request->delete_photos as $photoId) {
+                $photo = \App\Models\Photo::find($photoId);
+                if ($photo && $photo->ad_id === $ad->id) {
+                    if (File::exists('storage/' . $photo->path)) {
+                        File::delete('storage/' . $photo->path);
+                    }
+                    $photo->delete();
+                }
+            }
+        }
+
+        if ($request->hasFile('photos')) {
+            foreach ($request->file('photos') as $photo) {
+                $path = $photo->store('ads_photos', 'public');
+                \App\Models\Photo::create([
+                    'ad_id' => $ad->id,
+                    'path' => $path
+                ]);
+            }
+        }
+
+        return redirect()->route('ads.show', $ad->slug)->with('success', 'Annonce mise à jour avec succès!');
     }
 
 
