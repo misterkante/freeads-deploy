@@ -10,9 +10,18 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $categories = Category::factory(50)->create(); 
+        \App\Models\User::factory(20)->create();
+        $this->call([
+            AdsSeeder::class,
+        ]);
 
-        Ad::factory(150)->create([                  
+        // \App\Models\User::factory()->create([
+        //     'login' => 'TestUser',
+        //     'email' => 'test@example.com',
+        // ]);
+      
+        $categories = Category::factory(10)->create(); 
+        Ad::factory(20)->create([                  
             'category_id' => fn() => $categories->random()->id,
         ]);
     }
