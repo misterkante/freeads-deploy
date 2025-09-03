@@ -11,10 +11,42 @@ class AdsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $ads = \app\Models\Ad::latest()->get();
-        return view('ads.index', compact('ads'));
+
+        //recuperer les infos depuis l'URI
+        $categoryId = $request->input('category');
+        $minPrice = $request->input('minPrice');
+        $maxPrice = $request->input('maxPrice');
+        $condition = $request->input('condition');
+        $location = $request->input('location');
+        $search = $request->input('search');
+
+        //rechercher le produit
+        $query = \App\Models\Ad::query();
+        if(!empty($search) && $search = '') {
+            $query->where('title', 'like', "%$search%");
+        }
+
+        if(!empty($categoryId)) {
+            $query->where('category_id', $categoryId);
+        }
+        if(!empty($minPrice)) {
+            $query->where('price', '>=', $minPrice);
+        }
+        if(!empty($maxPrice)) {
+            $query->where('price', '<=', $maxPrice);
+        }
+        if(!empty($condition)) {
+            $query->where('condition', $condition);
+        }
+        if(!empty($location)) {
+            $query->where('location', $location);
+        }
+
+        $ads = $query->with(relations: ['category', 'photos'])->latest()->paginate();
+        $categories = \App\Models\Category::all();
+        return view('ads.index', compact('ads', 'categories'));
     }
 
     /**
@@ -42,7 +74,7 @@ class AdsController extends Controller
 
         $photoPath = $request->file('photo')->store('ads_photos', 'public');
 
-        \app\Models\Ad::create([
+        \App\Models\Ad::create([
             'title' => $request->title,
             'category' => $request->category,
             'description' => $request->description,
@@ -58,8 +90,8 @@ class AdsController extends Controller
      */
     public function show(string $ads)
     {
-        $product = \app\Models\Ad::where('slug', $ads);
-        return view('ads.show', $product);
+        $product = \App\Models\Ad::where('slug', $ads);
+        return view('ads.show', compact('product'));
     }
 
     /**
@@ -87,7 +119,7 @@ class AdsController extends Controller
             'slug' => 'string',
         ]);
 
-        $product = \app\Models\Ad::where('slug', $ads);
+        $product = \App\Models\Ad::where('slug', $ads);
         $product->update($validated);
         $product->save();
     }
@@ -98,8 +130,8 @@ class AdsController extends Controller
      */
     public function destroy(string $ads)
     {
-        $product = \app\Models\Ad::where('slug', $ads);
-        $productImages = \app\Models\Photo::where('ads_id', $product->id);
+        $product = \App\Models\Ad::where('slug', $ads);
+        $productImages = \App\Models\Photo::where('ads_id', $product->id);
 
         foreach ($productImages as $image) {
             if(File::exists($image->path)){

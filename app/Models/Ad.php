@@ -13,7 +13,6 @@ class Ad extends Model
         'title',
         'category_id',
         'description',
-        'photo',
         'price',
         'location',
         'condition',
@@ -21,7 +20,7 @@ class Ad extends Model
         'created_by',
         'updated_by',
         'deleted_by',
-        'author',
+        'user_id',
     ];
 
     protected $casts = [
@@ -47,7 +46,7 @@ class Ad extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function category()

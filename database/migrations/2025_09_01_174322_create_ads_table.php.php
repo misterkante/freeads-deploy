@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('created_by')->nullable();
             $table->string('updated_by')->nullable();
             $table->string('deleted_by')->nullable();
-            // link to users
+            // links
             $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
             $table->foreignId('category_id')->constrained('categories')->restrictOnDelete();
         });

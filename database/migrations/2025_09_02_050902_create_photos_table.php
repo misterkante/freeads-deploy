@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('path');
             $table->timestamps();
 
-            $table->foreignId('ads_id')->constrained('ads')->restrictOnDelete();
+            $table->foreignId('ad_id')->constrained('ads')->restrictOnDelete();
         });
     }
 

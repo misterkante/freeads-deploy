@@ -11,10 +11,14 @@ class Photo extends Model
 
     protected $fillable = [
         'path',
-        'ads_id'
+        'ad_id'
     ];
 
-    public function ads() {
+    protected $casts = [
+        'ad_id' => 'int'
+    ];
+
+    public function ad() {
 
         return $this->belongsTo(Ad::class);
 

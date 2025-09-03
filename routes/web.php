@@ -19,4 +19,4 @@ Route::get('/', function () {
 });
 
 // create all default ads route in on line
-Route::resource('ads',\app\Http\Controllers\AdsController::class);
+Route::resource('ads',AdsController::class);
