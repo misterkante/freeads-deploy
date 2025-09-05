@@ -64,6 +64,12 @@
                 </form>
             </aside>
             <section class="ml-76 mr-10 w-full mt-28 ">
+                @if (empty($ads))
+                <div class="font-bold text-xl md:text-5xl bg-indigo-100 p-3 mb-3 ml-10 text-gray-400">
+                    No mathced Ad!
+                </div>
+                @endif
+
                 @if (!empty($ads))
                 <div class="font-light bg-indigo-100 p-3 mb-3 ml-10 text-gray-400">
                     <span class="text-indigo-800 font-medium text-lg">{{ $ads->total()}} ads </span> matched @if($search) {{$search}} @endif!

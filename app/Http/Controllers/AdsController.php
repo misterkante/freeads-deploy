@@ -83,8 +83,8 @@ class AdsController extends Controller
             'price' => $request->price,
             'location' => $request->location,
             'condition' => $request->condition,
-            'user_id' => 2,
-            'created_by' => 2,
+            'user_id' => Auth::id(),
+            'created_by' => Auth::id(),
             'slug' => Str::slug($request->title) . '-' . uniqid(),
         ]);
 
@@ -175,10 +175,10 @@ class AdsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $ads)
+    public function destroy(string $ad)
     {
-        $product = \App\Models\Ad::where('slug', $ads);
-        $productImages = \App\Models\Photo::where('ads_id', $product->id);
+        $product = \App\Models\Ad::where('slug', $ad)->first();
+        $productImages = \App\Models\Photo::where('ad_id', $product->id)->get();
 
         foreach ($productImages as $image) {
             if(File::exists($image->path)){
@@ -189,5 +189,6 @@ class AdsController extends Controller
 
         $product->delete();
         // $product->deleted_by(Auth::user()->id);
+        return redirect('/my-ads');
     }
 }

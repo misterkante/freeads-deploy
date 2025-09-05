@@ -1,5 +1,6 @@
 <?php
 
+use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdsController;
 use App\Http\Controllers\AuthController;
@@ -30,12 +31,13 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 // LOGIN
 Route::get('/login', [AuthController::class, 'showLogin'])->name('show.login');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // CRUD Users
-Route::get('/users', [UserController::class, 'index'])->name('users.index');
+Route::get('/users', [UserController::class, 'index'])->name('users.index')->middleware("auth");
 
-Route::post('/users/create', [UserController::class, 'store'])->name('create'); //Create user
-Route::get('/users/create', [UserController::class, 'create'])->name('users.create'); //Go to create user page
+Route::post('/users/create', [UserController::class, 'store'])->name('create')->middleware("auth"); //Create user
+Route::get('/users/create', [UserController::class, 'create'])->name('users.create')->middleware("auth"); //Go to create user page
 
 
 // EMAIL VERIF
@@ -60,23 +62,15 @@ Route::post('/email/verification-notification', function (Request $request) {
 
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
-Route::get('/profile', function () {
+//SHOW USER PROFILE
 
-    // Only verified users may access this route...
 
-})->middleware(['auth', 'verified']);
-// Users page
-Route::get('/profile', function ()
-{
-    return view('users.profil');
-})->name('users.profile');
+Route::get('/profile', [UserController::class, 'showProfile'])->name('users.profile')->middleware("auth");
+Route::put('/profile', [UserController::class, 'updateUser'])->name('updateUser')->middleware("auth");
 
-Route::get('/settings', function ()
-{
-    return view('users.settings');
-})->name('users.settings');
+Route::post('/profile', [UserController::class, 'deleteUser'])->name('deleteUser')->middleware("auth");
 
-Route::get('/my-ads', function ()
-{
-    return view('users.myads');
-})->name('users.myads');
+
+Route::get('/settings', [UserController::class, 'showSettings'])->name('users.settings')->middleware("auth");
+
+Route::get('/my-ads', [UserController::class, 'showMyAds'])->name('users.myads')->middleware("auth");

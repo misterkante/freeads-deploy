@@ -1,9 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Ad;
 use App\Models\User;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\ViewName;
 
@@ -35,39 +38,35 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User Created');
     }
 
-    //Create page
 
-    public function create (){
-        return view('users.create');
-    }
-
-    //Edit page
-
-    public function edit(User $user){
-        return view('users.edit');
-    }
-
-    public function update(Request $request){
+    public function updateUser(Request $request){
             $validated = $request->validate([
             'login'=>'required|string|max:255',
-            'email'=>'required|email|unique:users',
-            'password' => 'required|string|min:8|confirmed',
             'phone'=>'required|string',
         ]);
-        User::update([
-            'login' => $validated('login'),
-            'email' => $validated ('email'),
-            'password'=> $validated ('password'),
-            'phone'=>$validated ('phone'),
-        ]);
-        return redirect()->route('users.index')->with('success', 'User Infos updated');
+
+        $user = User::find(Auth::id());
+        $user->update($validated);
+        $user->save();
+        return redirect()->route('users.profile')->with('success', 'Personnal infos updated');
     }
 
-    //Destroy
-    public function destroy (string $id){
-        $user = User::find($id);
+    public function deleteUser(){
+        $user = User::find(Auth::id());
         $user->delete();
-        return redirect()->route('users.index')->with('success', 'User deleted');
     }
 
+    public function showProfile() {
+        $user = Auth::user();
+        return view('users.profil',compact('user') );
+    }
+
+
+    public function showMyAds() {
+        $ads = Ad::where('user_id', Auth::id())->get();
+        return view('users.myads', compact('ads'));
+    }
+    public function showSettings() {
+        return view('users.settings');
+    }
 }
