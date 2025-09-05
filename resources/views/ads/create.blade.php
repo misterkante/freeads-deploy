@@ -1,15 +1,15 @@
-@extends('layouts.app')
+@extends('ads.layout')
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Create a new Ad</h1>
+    <h2 class="mb-4">Create a new Ad</h2>
 
     <form action="{{ route('ads.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
-        
+
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
-            <input type="text" class="form-control @error('title') is-invalid @enderror" 
+            <input type="text" class="form-control @error('title') is-invalid @enderror"
                    id="title" name="title" value="{{ old('title') }}" required>
             @error('title')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -18,7 +18,7 @@
 
         <div class="mb-3">
             <label for="category_id" class="form-label">Category</label>
-            <select class="form-control @error('category_id') is-invalid @enderror" 
+            <select class="form-control @error('category_id') is-invalid @enderror"
                     id="category_id" name="category_id" required>
                 <option value="">Please select a category</option>
                 @foreach(\App\Models\Category::all() as $category)
@@ -34,7 +34,7 @@
 
         <div class="mb-3">
             <label for="description" class="form-label">Description</label>
-            <textarea class="form-control @error('description') is-invalid @enderror" 
+            <textarea class="form-control @error('description') is-invalid @enderror"
                       id="description" name="description" rows="4" required>{{ old('description') }}</textarea>
             @error('description')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -43,7 +43,7 @@
 
         <div class="mb-3">
             <label for="price" class="form-label">Price</label>
-            <input type="number" class="form-control @error('price') is-invalid @enderror" 
+            <input type="number" class="form-control @error('price') is-invalid @enderror"
                    id="price" name="price" value="{{ old('price') }}" required step="0.01">
             @error('price')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -52,7 +52,7 @@
 
         <div class="mb-3">
             <label for="location" class="form-label">Location</label>
-            <input type="text" class="form-control @error('location') is-invalid @enderror" 
+            <input type="text" class="form-control @error('location') is-invalid @enderror"
                    id="location" name="location" value="{{ old('location') }}" required>
             @error('location')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -61,7 +61,7 @@
 
         <div class="mb-3">
             <label for="condition" class="form-label">Condition</label>
-            <select class="form-control @error('condition') is-invalid @enderror" 
+            <select class="form-control @error('condition') is-invalid @enderror"
                     id="condition" name="condition" required>
                 <option value="new" {{ old('condition') == 'new' ? 'selected' : '' }}>New</option>
                 <option value="good" {{ old('condition') == 'good' ? 'selected' : '' }}>Good condition</option>
@@ -74,7 +74,7 @@
 
         <div class="mb-3">
             <label for="photos" class="form-label">Pictures</label>
-            <input type="file" class="form-control @error('photos.*') is-invalid @enderror" 
+            <input type="file" class="form-control @error('photos.*') is-invalid @enderror"
                    id="photos" name="photos[]" multiple accept="image/*">
             @error('photos.*')
                 <div class="invalid-feedback">{{ $message }}</div>

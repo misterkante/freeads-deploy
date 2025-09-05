@@ -18,8 +18,8 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/', function () {
-    redirect()->route('ads.index');
-});
+    return redirect()->route('ads.index');
+})->name('welcome');
 
 // create all default ads route in on line
 Route::resource('ads',AdsController::class);
@@ -65,3 +65,18 @@ Route::get('/profile', function () {
     // Only verified users may access this route...
 
 })->middleware(['auth', 'verified']);
+// Users page
+Route::get('/profile', function ()
+{
+    return view('users.profil');
+})->name('users.profile');
+
+Route::get('/settings', function ()
+{
+    return view('users.settings');
+})->name('users.settings');
+
+Route::get('/my-ads', function ()
+{
+    return view('users.myads');
+})->name('users.myads');
