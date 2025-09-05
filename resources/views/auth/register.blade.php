@@ -12,7 +12,7 @@
     </style>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  </head>  
+  </head>
 
 <body class = "flex mt-20 justify-center items-center">
 <div class="flex bg-white p-10 shadow-2xl rounded-xl">
@@ -50,7 +50,7 @@
     <label for="phone" class="mb-2 block text-md font-medium text-gray-700 items-center">Phone</label>
   </div>
    <div class="w-full mb-5">
-    <input type="tel" name = "phone" id="phone" class="form-control w-full w-full rounded-lg border border-gray-300 p-2.5 text-md text-gray-900" placeholder="Enter your phone number" required/>
+    <input type="tel" name = "phone" id="phone" class="form-control w-full rounded-lg border border-gray-300 p-2.5 text-md text-gray-900" placeholder="+229 ......" required/>
       @if ($errors->has('phone'))
       <div class="flex mt-5 items-center">
         <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 20 20">
@@ -90,7 +90,7 @@
         .catch(() => callback('bj'));
     },
     utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
-  });
-</script>
+    });
+  </script>
 </body>
 </html>

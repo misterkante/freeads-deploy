@@ -8,6 +8,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use App\Models\User;
 use Dotenv\Exception\ValidationException;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationData;
 
 class AuthController extends Controller
@@ -27,7 +28,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'phone'=>'required|string|phone:AUTO',
         ]);
-        
+
         $user = User::create([
             'login' => $request->login,
             'email'=> $request->email,

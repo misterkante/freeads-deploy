@@ -19,10 +19,10 @@ class DatabaseSeeder extends Seeder
         //     'login' => 'TestUser',
         //     'email' => 'test@example.com',
         // ]);
-      
-        $categories = Category::factory(10)->create(); 
-        Ad::factory(20)->create([                  
-            'category_id' => fn() => $categories->random()->id,
-        ]);
+
+        // w$categories = Category::factory(10)->create();
+        // Ad::factory(20)->create([
+        //     'category_id' => fn() => $categories->random()->id,
+        // ]);
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Str;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
@@ -22,7 +24,7 @@ class AdsController extends Controller
         $search = $request->input('search');
 
         $query = \App\Models\Ad::query();
-        if(!empty($search) && $search = '') {
+        if($request->has('search')) {
             $query->where('title', 'like', "%$search%");
         }
 
@@ -43,14 +45,16 @@ class AdsController extends Controller
         }
 
         $ads = $query->with(relations: ['category', 'photos'])->latest()->paginate();
+
         $categories = \App\Models\Category::all();
-        return view('ads.index', compact('ads', 'categories'));
+        $locations = \App\Models\Ad::get('location');
+        return view('ads.index', compact('ads', 'categories','locations', 'search'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-  
+
     public function create()
     {
         return view('ads.create');
@@ -71,7 +75,7 @@ class AdsController extends Controller
             'location' => 'required|string|max:255',
             'condition' => 'required|in:new,good,used',
         ]);
-      
+
         $ad = \App\Models\Ad::create([
             'title' => $request->title,
             'category_id' => $request->category_id,
@@ -81,9 +85,9 @@ class AdsController extends Controller
             'condition' => $request->condition,
             'user_id' => Auth::id(),
             'created_by' => Auth::id(),
-            'slug' => \Str::slug($request->title) . '-' . uniqid(),
+            'slug' => Str::slug($request->title) . '-' . uniqid(),
         ]);
-      
+
         if ($request->hasFile('photos')) {
             foreach ($request->file('photos') as $photo) {
                 $path = $photo->store('ads_photos', 'public');
@@ -96,15 +100,15 @@ class AdsController extends Controller
 
         return redirect()->route('ads.show', $ad->slug)->with('success', 'Annonce créée avec succès!');
     }
-  
+
     /**
      * Display the specified resource.
      */
-  
+
     public function show(string $ads)
     {
-        $product = \App\Models\Ad::where('slug', $ads);
-        return view('ads.show', compact('product'));
+        $ad = \App\Models\Ad::with('photos')->where('slug', $ads)->first();
+        return view('ads.show', compact('ad'));
     }
 
     /**
@@ -142,7 +146,7 @@ class AdsController extends Controller
             'updated_by' => Auth::id(),
         ]);
 
-        
+
         if ($request->has('delete_photos')) {
             foreach ($request->delete_photos as $photoId) {
                 $photo = \App\Models\Photo::find($photoId);
@@ -171,10 +175,10 @@ class AdsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $ads)
+    public function destroy(string $ad)
     {
-        $product = \App\Models\Ad::where('slug', $ads);
-        $productImages = \App\Models\Photo::where('ads_id', $product->id);
+        $product = \App\Models\Ad::where('slug', $ad)->first();
+        $productImages = \App\Models\Photo::where('ad_id', $product->id)->get();
 
         foreach ($productImages as $image) {
             if(File::exists($image->path)){
@@ -185,5 +189,6 @@ class AdsController extends Controller
 
         $product->delete();
         // $product->deleted_by(Auth::user()->id);
+        return redirect('/my-ads');
     }
 }
