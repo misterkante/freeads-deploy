@@ -12,7 +12,7 @@
                         <li class="w-full">
                             <label for="categories" class="font-bold text-indigo-400">Categories</label>
                             <hr class="text-gray-300 mt-2">
-                                    <select name="categories[]" id="categories" class="w-full border border-gray-500 rounded-full px-2 py-1 h-8" multiple>
+                                    <select name="categories[]" id="categories" class="w-full border border-gray-500 rounded-full px-2 py-1 h-8" >
                                         <option value="All">All</option>
                                         @foreach ($categories as $item)
                                         <option value="{{$item->id}}">{{$item->name}}</option>

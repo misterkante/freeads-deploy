@@ -51,35 +51,6 @@
                             </div>
                         </a>
                     @endforeach
-                        @foreach ($ads as $ad)
-                            <div class="border rounded-lg p-4">
-                          <div class="flex justify-between items-start mb-3">
-                            <div>
-                              <h3 class="font-semibold text-black">{{$ad->title}}</h3>
-                              <p class="text-sm text-gray-600">22/08/2025</p>
-                            </div>
-                            <div class="text-right">
-                              <div
-                                class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
-                                En attente</div>
-                              <p class="text-lg font-bold text-pink-600 mt-1">10500€</p>
-                            </div>
-                          </div>
-                          <div class="flex justify-between items-center">
-                            <p class="text-sm text-gray-600">1 article(s)</p><a
-                              class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
-                              href="https://divine-beauty-store.vercel.app/order/c4c3f340-10e4-447f-905f-f535eece3c51"><svg
-                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-eye w-4 h-4 mr-2">
-                                <path
-                                  d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0">
-                                </path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                              </svg>Voir détails</a>
-                          </div>
-                        </div>
-                        @endforeach
 
                       </div>
                     </div>
